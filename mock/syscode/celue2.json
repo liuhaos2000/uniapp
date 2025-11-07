@@ -1,0 +1,10 @@
+{
+  "selectOptions": [
+    { "id": 1, "label": "aa", "value": "CN" },
+    { "id": 2, "label": "美国", "value": "US" },
+    { "id": 3, "label": "巴西", "value": "BR" },
+    { "id": 4, "label": "日本", "value": "JP" },
+    { "id": 5, "label": "德国", "value": "DE" }
+  ]
+
+}

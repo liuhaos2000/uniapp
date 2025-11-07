@@ -95,36 +95,36 @@
   "downColor": "#00da3c",
   "downBorderColor": "#008F28",
   "markPoint": {
-            "data": [
-              {
-                "name": "Mark",
-                "coord": ["2013/5/31", 2300],
-                "value": 2300,
-                "itemStyle": {
-                  "color": "rgb(41,60,85)"
-                },
-                "symbolSize": 60
-              },
-              {
-                "name": "highest value",
-                "type": "max",
-                "valueDim": "highest",
-                "symbolSize": 50
-              },
-              {
-                "name": "lowest value",
-                "type": "min",
-                "valueDim": "lowest",
-                "symbolSize": 10,
-                "symbol": "arrow"
-              },
-              {
-                "name": "average value on close",
-                "type": "average",
-                "valueDim": "close",
-                "symbolSize": 20,
-                "symbol": "diamond"
-              }
-            ]
+    "data": [
+      {
+        "name": "Mark",
+        "coord": ["2013/5/31", 2300],
+        "value": 2300,
+        "itemStyle": {
+          "color": "rgb(41,60,85)"
+        },
+        "symbolSize": 60
+      },
+      {
+        "name": "highest value",
+        "type": "max",
+        "valueDim": "highest",
+        "symbolSize": 50
+      },
+      {
+        "name": "lowest value",
+        "type": "min",
+        "valueDim": "lowest",
+        "symbolSize": 10,
+        "symbol": "arrow"
+      },
+      {
+        "name": "average value on close",
+        "type": "average",
+        "valueDim": "close",
+        "symbolSize": 20,
+        "symbol": "diamond"
+      }
+    ]
   }
 }
