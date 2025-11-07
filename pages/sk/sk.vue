@@ -1,6 +1,5 @@
 <template>
 	<view class="page">
-		<!-- use a plain div for the chart container to guarantee a DOM element for echarts -->
 		<div id="sk-chart" class="chart-container"></div>
 	</view>
 </template>

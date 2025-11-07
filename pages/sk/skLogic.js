@@ -76,8 +76,8 @@ export function useSkLogic() {
       const option = {
         title: { text: initData.title || '上证指数', left: 0 },
         tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
-        legend: { data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'], top: 20 },
-        grid: { left: '10%', right: '10%', bottom: '15%' },
+        legend: { data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'], top: 50 },
+        grid: { left: '10%', right: '10%', bottom: '15%' ,top:90},
         xAxis: {
           type: 'category',
           data: data0.categoryData,
@@ -103,7 +103,7 @@ export function useSkLogic() {
             markPoint: initData.markPoint || {},
             markLine: initData.markLine || {}
           },
-          { name: 'MA5', type: 'line', data: calculateMA(data0.values, 5), smooth: true, lineStyle: { opacity: 0.5 } },
+          { name:  'MA5', type: 'line', data: calculateMA(data0.values,  5), smooth: true, lineStyle: { opacity: 0.5 } },
           { name: 'MA10', type: 'line', data: calculateMA(data0.values, 10), smooth: true, lineStyle: { opacity: 0.5 } },
           { name: 'MA20', type: 'line', data: calculateMA(data0.values, 20), smooth: true, lineStyle: { opacity: 0.5 } },
           { name: 'MA30', type: 'line', data: calculateMA(data0.values, 30), smooth: true, lineStyle: { opacity: 0.5 } }
