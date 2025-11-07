@@ -48,7 +48,7 @@ export default {
 <style lang="scss">
 .chart-container {
 	width: 100%;
-	height: 100vh; /* fits full viewport height; adjust as needed */
+	height: 60vh; /* fits full viewport height; adjust as needed */
 }
 
 .page {
