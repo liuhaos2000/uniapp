@@ -1,0 +1,56 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path": "pages/main/main01/main01",
+			"style": {
+				"navigationBarTitleText": "新页面"
+			}
+		},
+		{
+			"path": "pages/sk/sk",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#007aff",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/index/index",
+			"iconPath": "static/image/icon_component.png",
+			"selectedIconPath": "static/image/icon_component_HL.png",
+			"text": "组件"
+		}, {
+			"pagePath": "pages/main/main01/main01",
+			"iconPath": "static/image/icon_API.png",
+			"selectedIconPath": "static/image/icon_API_HL.png",
+			"text": "接口"
+		}, {
+			"pagePath": "pages/main/main01/main01",
+			"iconPath": "static/image/icon_API.png",
+			"selectedIconPath": "static/image/icon_API_HL.png",
+			"text": "接口"
+		}, {
+			"pagePath": "pages/main/main01/main01",
+			"iconPath": "static/image/icon_API.png",
+			"selectedIconPath": "static/image/icon_API_HL.png",
+			"text": "接口"
+		}]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}
