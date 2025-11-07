@@ -3,8 +3,8 @@
 		<view class="page-body">
 			<view class="btn-area">
 				<!-- 使用绝对路径（以 / 开头），否则在某些运行环境下会被解析为相对路径而无法跳转 -->
-				<navigator url="/pages/main/main01/main01" hover-class="navigator-hover">
-					<button type="default">跳转到新页面</button>
+				<navigator url="/pages/sk/sk" hover-class="navigator-hover">
+					<button type="default">SK</button>
 				</navigator>
 				<!-- 程序化跳转测试按钮（直接调用 uni.navigateTo） -->
 				<button type="default" @click="goToMain" @tap="goToMain">程序化跳转测试</button>
