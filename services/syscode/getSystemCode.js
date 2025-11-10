@@ -1,5 +1,6 @@
 // 导入全局配置
 import ENV from '@/config/env.js'
+//import mockData from '@/mock/syscode/celue.json'
 
 const API_URL = `${ENV.API.BASE_URL}/${ENV.API.VERSION}/syscode/getSystemCode`
 
@@ -12,8 +13,12 @@ export const getSystemCode = async (codeType) => {
     if (ENV.MOCK.DELAY > 0) await new Promise(r => setTimeout(r, ENV.MOCK.DELAY))
     // 动态加载 mock 数据
     try {
-      const mockData = require(`@/mock/syscode/${codeType}.json`)
-      return mockData
+      const response = await fetch(`../mock/syscode/${codeType}.json`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const mockData = await response.json();
+      return mockData;
     } catch (e) {
       console.error(`mock 加载失败: ${codeType}.json`, e)
       return null
