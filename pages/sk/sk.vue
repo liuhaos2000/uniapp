@@ -54,6 +54,7 @@ import uniTd from '@dcloudio/uni-ui/lib/uni-td/uni-td.vue'
 import uniPagination from '@dcloudio/uni-ui/lib/uni-pagination/uni-pagination.vue'
 import uniDataSelect from '@dcloudio/uni-ui/lib/uni-data-select/uni-data-select.vue'
 import getSystemCode from '@/services/syscode/getSystemCode.js'
+import getHuiceData from '@/services/sk/getHuice.js'
 
 export default {
 	name: 'SkPage',
@@ -73,24 +74,16 @@ export default {
 
 		// 表格相关的响应式数据
 		const loading = ref(false)
-		const tableData = ref([
-			{ buyDate: '2025-01-10', sellDate: '2025-02-15', warehousePosition: '50%', profitMargin: '+8.5%' },
-			{ buyDate: '2025-03-05', sellDate: '2025-04-01', warehousePosition: '30%', profitMargin: '-2.1%' },
-			{ buyDate: '2025-05-12', sellDate: '2025-06-20', warehousePosition: '80%', profitMargin: '+15.7%' }
-		])
-		const pageCurrent = ref(1)
-		const pageSize = ref(10)
-		const total = ref(0)
+		const tableData = ref([])
+
+
 
 		// 表格相关的方法
 		function selectionChange(e) {
 			console.log('选中的数据', e.detail.index)
 		}
 
-		function change(e) {
-			pageCurrent.value = e.current
-			// 这里可以调用获取数据的方法
-		}
+
 
 		function formSubmit(e) {
 			// uni-app form submit: prevent default and handle values
@@ -108,17 +101,11 @@ export default {
 		}
 
 		function onDataSelectChange(val) {
-			// uni-data-select may emit an object or an id/value. Normalize both cases.
-			// if (!val) return
-			// if (typeof val === 'object' && val.label) {
-			// 	selected.value = val
-			// } else {
-			// 	const found = dataList.value.find(item => item.id === val || item.value === val)
-			// 	if (found) selected.value = found
-			// }
+
 		}
 
 		onMounted(async () => {
+			console.log("2222222222222222222222222222-1")
 			// add resize listener for responsiveness
 			window.addEventListener('resize', resizeHandler)
 
@@ -136,6 +123,26 @@ export default {
 			} catch (e) {
 				console.error('下拉框数据加载失败', e)
 			}
+
+			// init chart and render with data from service/mock
+			const { initAndRender } = useSkLogic()
+			try {
+				await initAndRender(SK_CONSTANTS.CHART_CONTAINER_ID)
+				console.log('sk chart initialized')
+			} catch (e) {
+				console.error('Failed to initialize sk chart:', e)
+			}
+			// 加载表格数据
+			try {
+				loading.value = true
+				const data = await getHuiceData("1","1")
+				console.log('getHuiceData:', data); // 调试输出
+				tableData.value = data.historyList
+				loading.value = false
+			} catch (e) {
+				console.error('表格数据加载失败', e)
+				loading.value = false
+			}
 		})
 
 		onBeforeUnmount(() => {
@@ -143,7 +150,6 @@ export default {
 		})
 
 		return {
-
 			bindPickerChange,
 			// uni-data-select mock data + selected
 			dataList,
@@ -152,25 +158,15 @@ export default {
 			// 表格相关的数据
 			loading,
 			tableData,
-			pageCurrent,
-			pageSize,
-			total,
 			selectionChange,
-			change,
 			formSubmit
 		}
 	},
 
 	// keep uni-app onLoad lifecycle to receive navigation params
 	async onLoad(option) {
-		// init chart and render with data from service/mock
-		const { initAndRender } = useSkLogic()
-		try {
-			await initAndRender(SK_CONSTANTS.CHART_CONTAINER_ID, option)
-			console.log('sk chart initialized')
-		} catch (e) {
-			console.error('Failed to initialize sk chart:', e)
-		}
+		console.log("11111111111111111111111111-1")
+
 	}
 }
 </script>
