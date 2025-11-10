@@ -5,6 +5,9 @@ import mockData from '@/mock/sk/getHuice/data.json'
 const API_URL = `${ENV.API.BASE_URL}/${ENV.API.VERSION}/sk/getHuice`
 
 export const getHuiceData = async (skId,celueId) => {
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaa")
+  console.log(skId)
+    console.log(celueId)
   if (ENV.USE_MOCK) {
     if (ENV.MOCK.DELAY > 0) await new Promise(r => setTimeout(r, ENV.MOCK.DELAY))
     return mockData

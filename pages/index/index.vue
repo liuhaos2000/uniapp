@@ -3,7 +3,7 @@
 		<view class="page-body">
 			<view class="btn-area">
 				<!-- 使用绝对路径（以 / 开头），否则在某些运行环境下会被解析为相对路径而无法跳转 -->
-				<navigator url="/pages/sk/sk" hover-class="navigator-hover">
+				<navigator url="/pages/sk/sk?skId=600001" hover-class="navigator-hover">
 					<button type="default">SK</button>
 				</navigator>
 				<!-- 程序化跳转测试按钮（直接调用 uni.navigateTo） -->

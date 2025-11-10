@@ -3,7 +3,7 @@
 		<div id="sk-chart" class="chart-container"></div>
 	</view>
 	<view>
-		<uni-forms ref="dynamicForm" :rules="dynamicRules" :modelValue="dynamicFormData">
+		<uni-forms ref="form"  :modelValue="formData">
 			<view class="uni-list sk-div">
 				<view class="uni-list-cell">
 					<uni-section title="本地数据" type="line">
@@ -16,7 +16,7 @@
 				</view>
 
 				<view class="button-group sk-btdiv">
-					<button class="sk-bt" type="primary" size="mini" @click="submit('dynamicForm')">RUN</button>
+					<button class="sk-bt" type="primary" size="mini" @click="formSubmit">RUN</button>
 				</view>
 			</view>
 		</uni-forms>
@@ -55,6 +55,7 @@ import uniPagination from '@dcloudio/uni-ui/lib/uni-pagination/uni-pagination.vu
 import uniDataSelect from '@dcloudio/uni-ui/lib/uni-data-select/uni-data-select.vue'
 import getSystemCode from '@/services/syscode/getSystemCode.js'
 import getHuiceData from '@/services/sk/getHuice.js'
+import { useRoute } from 'vue-router';
 
 export default {
 	name: 'SkPage',
@@ -67,6 +68,9 @@ export default {
 		uniDataSelect
 	},
 	setup() {
+		// inputParms  
+		const route = useRoute();
+
 		const { initAndRender, resize } = useSkLogic()
 		// 下拉框
 		const dataList = ref([])
@@ -76,7 +80,19 @@ export default {
 		const loading = ref(false)
 		const tableData = ref([])
 
-
+		// 加载表格数据的方法
+		const loadTableData = async () => {
+			try {
+				loading.value = true
+				const data = await getHuiceData(route.query.skId, selected.value)
+				console.log('getHuiceData:', data); // 调试输出
+				tableData.value = data.historyList
+			} catch (e) {
+				console.error('表格数据加载失败', e)
+			} finally {
+				loading.value = false
+			}
+		}
 
 		// 表格相关的方法
 		function selectionChange(e) {
@@ -84,12 +100,8 @@ export default {
 		}
 
 
-
-		function formSubmit(e) {
-			// uni-app form submit: prevent default and handle values
-			if (e && e.preventDefault) e.preventDefault()
-			console.log('form submitted; selected:', selected.value)
-			// you can perform form actions here
+		const formSubmit = async (praams) => {
+			await loadTableData()
 		}
 
 		function resizeHandler() {
@@ -105,7 +117,7 @@ export default {
 		}
 
 		onMounted(async () => {
-			console.log("2222222222222222222222222222-1")
+
 			// add resize listener for responsiveness
 			window.addEventListener('resize', resizeHandler)
 
@@ -126,6 +138,7 @@ export default {
 
 			// init chart and render with data from service/mock
 			const { initAndRender } = useSkLogic()
+			
 			try {
 				await initAndRender(SK_CONSTANTS.CHART_CONTAINER_ID)
 				console.log('sk chart initialized')
@@ -133,16 +146,7 @@ export default {
 				console.error('Failed to initialize sk chart:', e)
 			}
 			// 加载表格数据
-			try {
-				loading.value = true
-				const data = await getHuiceData("1","1")
-				console.log('getHuiceData:', data); // 调试输出
-				tableData.value = data.historyList
-				loading.value = false
-			} catch (e) {
-				console.error('表格数据加载失败', e)
-				loading.value = false
-			}
+			await loadTableData()
 		})
 
 		onBeforeUnmount(() => {
@@ -165,9 +169,9 @@ export default {
 
 	// keep uni-app onLoad lifecycle to receive navigation params
 	async onLoad(option) {
-		console.log("11111111111111111111111111-1")
-
 	}
+
+
 }
 </script>
 
