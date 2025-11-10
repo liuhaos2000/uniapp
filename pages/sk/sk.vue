@@ -42,8 +42,8 @@
 		</view>
 	</view>
 
-	<vive class="goods-carts">
-		<uni-goods-nav @click="onClick" />
+	<vive class="goods-carts goods-carts2">
+		<uni-goods-nav :options="options" :buttonGroup="buttonGroup" @click="onClick" />
 	</vive>
 
 </template>
@@ -179,14 +179,19 @@ export default {
 	
 	data () {
 	  return {
-	    options: [],
+	    options: [
+			// {
+			// icon: 'chat',
+			// text: '客服'
+			// }
+	],
 	    buttonGroup: [{
-	      text: '加入购物车',
+	      text: '买入',
 	      backgroundColor: '#ff0000',
 	      color: '#fff'
 	    },
 	    {
-	      text: '立即购买',
+	      text: '卖出',
 	      backgroundColor: '#ffa200',
 	      color: '#fff'
 	    }
@@ -246,5 +251,9 @@ export default {
 	right: var(--window-right);
 	/* #endif */
 	bottom: 0;
+}
+
+.goods-carts2 ::v-deep .uni-tab__cart-sub-left {
+  padding:0 0;
 }
 </style>
