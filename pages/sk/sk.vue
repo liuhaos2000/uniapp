@@ -41,9 +41,9 @@
 
 		</view>
 	</view>
-	
-	<vive>
-		<uni-goods-nav :fill="true"  :options="options" :buttonGroup="buttonGroup"  @click="onClick" @buttonClick="buttonClick" />
+
+	<vive class="goods-carts">
+		<uni-goods-nav @click="onClick" />
 	</vive>
 
 </template>
@@ -61,7 +61,7 @@ import uniDataSelect from '@dcloudio/uni-ui/lib/uni-data-select/uni-data-select.
 import getSystemCode from '@/services/syscode/getSystemCode.js'
 import getHuiceData from '@/services/sk/getHuice.js'
 import { useRoute } from 'vue-router';
-
+import uniGoodsNav from '@dcloudio/uni-ui/lib/uni-goods-nav/uni-goods-nav.vue';
 export default {
 	name: 'SkPage',
 	components: {
@@ -70,7 +70,8 @@ export default {
 		uniTh,
 		uniTd,
 		uniPagination,
-		uniDataSelect
+		uniDataSelect,
+		uniGoodsNav 
 	},
 	setup() {
 		// inputParms  
@@ -178,20 +179,7 @@ export default {
 	
 	data () {
 	  return {
-	    options: [{
-			icon: 'headphones',
-			text: '客服'
-		}, {
-			icon: 'shop',
-			text: '店铺',
-			info: 2,
-			infoBackgroundColor:'#007aff',
-			infoColor:"red"
-		}, {
-			icon: 'cart',
-			text: '购物车',
-			info: 2
-		}],
+	    options: [],
 	    buttonGroup: [{
 	      text: '加入购物车',
 	      backgroundColor: '#ff0000',
@@ -243,5 +231,20 @@ export default {
 
 .sk-bt {
 	width: 100%;
+}
+
+.goods-carts {
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: column;
+	position: fixed;
+	left: 0;
+	right: 0;
+	/* #ifdef H5 */
+	left: var(--window-left);
+	right: var(--window-right);
+	/* #endif */
+	bottom: 0;
 }
 </style>
