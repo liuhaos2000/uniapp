@@ -6,9 +6,7 @@
 				<navigator url="/pages/sk/sk?skId=600001" hover-class="navigator-hover">
 					<button type="default">SK</button>
 				</navigator>
-				<navigator url="/pages/skfind/skfind" hover-class="navigator-hover">
-					<button type="default">FINDSK</button>
-				</navigator>
+	
 				<!-- 程序化跳转测试按钮（直接调用 uni.navigateTo） -->
 				<button type="default" @click="goToMain" @tap="goToMain">程序化跳转测试</button>
 				<!-- redirect 会在当前页替换为目标页，使用绝对路径 -->
