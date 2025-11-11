@@ -1,51 +1,55 @@
 <template>
-	<view class="page">
-		<div id="sk-chart" class="chart-container"></div>
-	</view>
-	<view>
-		<uni-forms ref="form"  :modelValue="formData">
-			<view class="uni-list sk-div">
-				<view class="uni-list-cell">
-					<uni-section title="本地数据" type="line">
-						<view class="uni-px-5 uni-pb-5">
-							<uni-data-select v-model="selected" :localdata="dataList" @change="onDataSelectChange">
-								
-							</uni-data-select>
-						</view>
-					</uni-section>
-				</view>
-
-				<view class="button-group sk-btdiv">
-					<button class="sk-bt" type="primary" size="mini" @click="formSubmit">RUN</button>
-				</view>
-			</view>
-		</uni-forms>
-	</view>
-	<view style="padding-bottom: 50px;">
-		<view class="uni-container">
-			<uni-table ref="table" :loading="loading" border stripe emptyText="暂无更多数据"
-				@selection-change="selectionChange">
-				<uni-tr>
-					<uni-th width="80" align="center">買入日</uni-th>
-					<uni-th width="80" align="center">賣出日</uni-th>
-					<uni-th width="20" align="center">倉位</uni-th>
-					<uni-th width="20" align="center">盈利</uni-th>
-				</uni-tr>
-				<uni-tr v-for="(item, index) in tableData" :key="index">
-					<uni-td>{{ item.buyDate }}</uni-td>
-					<uni-td>{{ item.sellDate }}</uni-td>
-					<uni-td align="right">{{ item.warehousePosition }}</uni-td>
-					<uni-td align="right">{{ item.profitMargin }}</uni-td>
-				</uni-tr>
-			</uni-table>
-
+	<view class="uni-container">
+		<view class="page">
+			<div id="sk-chart" class="chart-container"></div>
 		</view>
+		<view>
+			<uni-forms ref="form"  :modelValue="formData">
+				<view class="uni-list sk-div">
+					<view class="uni-list-cell">
+						<uni-section title="本地数据" type="line">
+							<view class="uni-px-5 uni-pb-5">
+								<uni-data-select v-model="selected" :localdata="dataList" @change="onDataSelectChange">
+									
+								</uni-data-select>
+							</view>
+						</uni-section>
+					</view>
+
+					<view class="button-group sk-btdiv">
+						<button class="sk-bt" type="primary" size="mini" @click="formSubmit">
+							RUN
+						</button>
+					</view>
+				</view>
+			</uni-forms>
+		</view>
+
+		<view style="padding-bottom: 50px;">
+			<view class="uni-container">
+				<uni-table ref="table" :loading="loading" border stripe emptyText="暂无更多数据"
+					@selection-change="selectionChange">
+					<uni-tr>
+						<uni-th width="80" align="center">買入日</uni-th>
+						<uni-th width="80" align="center">賣出日</uni-th>
+						<uni-th width="20" align="center">倉位</uni-th>
+						<uni-th width="20" align="center">盈利</uni-th>
+					</uni-tr>
+					<uni-tr v-for="(item, index) in tableData" :key="index">
+						<uni-td>{{ item.buyDate }}</uni-td>
+						<uni-td>{{ item.sellDate }}</uni-td>
+						<uni-td align="right">{{ item.warehousePosition }}</uni-td>
+						<uni-td align="right">{{ item.profitMargin }}</uni-td>
+					</uni-tr>
+				</uni-table>
+
+			</view>
+		</view>
+
+		<vive class="goods-carts goods-carts2">
+			<uni-goods-nav :options="options" :buttonGroup="buttonGroup" @click="onClick" />
+		</vive>
 	</view>
-
-	<vive class="goods-carts goods-carts2">
-		<uni-goods-nav :options="options" :buttonGroup="buttonGroup" @click="onClick" />
-	</vive>
-
 </template>
 
 <script>
@@ -61,7 +65,10 @@ import uniDataSelect from '@dcloudio/uni-ui/lib/uni-data-select/uni-data-select.
 import getSystemCode from '@/services/syscode/getSystemCode.js'
 import getHuiceData from '@/services/sk/getHuice.js'
 import { useRoute } from 'vue-router';
+import uniIcons from '@dcloudio/uni-ui/lib/uni-icons/uni-icons.vue';
 import uniGoodsNav from '@dcloudio/uni-ui/lib/uni-goods-nav/uni-goods-nav.vue';
+
+
 export default {
 	name: 'SkPage',
 	components: {
@@ -71,7 +78,9 @@ export default {
 		uniTd,
 		uniPagination,
 		uniDataSelect,
-		uniGoodsNav 
+		uniIcons,
+		uniGoodsNav
+	
 	},
 	setup() {
 		// inputParms  
@@ -127,7 +136,7 @@ export default {
 			// add resize listener for responsiveness
 			window.addEventListener('resize', resizeHandler)
 
-			// 使用 getSystemCode 加载下拉框数据
+			// 1 使用 getSystemCode 加载下拉框数据
 			try {
 				const syscodeData = await getSystemCode('celue')
 				console.log('syscodeData:', syscodeData);
@@ -142,7 +151,7 @@ export default {
 				console.error('下拉框数据加载失败', e)
 			}
 
-			// init chart and render with data from service/mock
+			// 2 init chart and render with data from service/mock
 			const { initAndRender } = useSkLogic()
 			
 			try {
@@ -151,10 +160,10 @@ export default {
 			} catch (e) {
 				console.error('Failed to initialize sk chart:', e)
 			}
-			// 加载表格数据
-			//await loadTableData()
+			// 3 加载表格数据
+			await loadTableData()
 
-			// 建立 WebSocket 连接
+			// 4 建立 WebSocket 连接
 			const socket = new WebSocket('ws://localhost:8080'); // 使用 mock 服务器地址
 
 			socket.onopen = () => {
@@ -210,17 +219,17 @@ export default {
 	  return {
 	    options: [
 			// {
-			// icon: 'chat',
+			// icon: 'contact',
 			// text: '客服'
 			// }
 		],
 	    buttonGroup: [{
-	      text: '买入',
+	      text: '測試',
 	      backgroundColor: '#ff0000',
 	      color: '#fff'
 	    },
 	    {
-	      text: '卖出',
+	      text: '加入自選',
 	      backgroundColor: '#ffa200',
 	      color: '#fff'
 	    }
@@ -285,4 +294,5 @@ export default {
 .goods-carts2 ::v-deep .uni-tab__cart-sub-left {
   padding:0 0;
 }
+  
 </style>

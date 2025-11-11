@@ -17,6 +17,12 @@
 			"style": {
 				"navigationBarTitleText": ""
 			}
+		},
+		{
+			"path": "pages/skfind/skfind",
+			"style": {
+				"navigationBarTitleText": ""
+			}
 		}
 	],
 	"tabBar": {
@@ -53,4 +59,5 @@
 		"backgroundColor": "#F8F8F8"
 	},
 	"uniIdRouter": {}
+
 }
