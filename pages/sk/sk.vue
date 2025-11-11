@@ -152,7 +152,36 @@ export default {
 				console.error('Failed to initialize sk chart:', e)
 			}
 			// 加载表格数据
-			await loadTableData()
+			//await loadTableData()
+
+			// 建立 WebSocket 连接
+			const socket = new WebSocket('ws://localhost:8080'); // 使用 mock 服务器地址
+
+			socket.onopen = () => {
+				console.log('WebSocket connection established')
+				// 发送初始化请求
+				socket.send(JSON.stringify({ action: 'subscribe', skId: route.query.skId }))
+			}
+
+			socket.onmessage = (event) => {
+				const data = JSON.parse(event.data)
+				console.log('WebSocket received data:', data)
+				// 更新表格数据
+				tableData.value = data.historyList
+			}
+
+			socket.onerror = (error) => {
+				console.error('WebSocket error:', error)
+			}
+
+			socket.onclose = () => {
+				console.log('WebSocket connection closed')
+			}
+
+			// 保存 WebSocket 对象以便在卸载组件时关闭连接
+			return () => {
+				socket.close()
+			}
 		})
 
 		onBeforeUnmount(() => {
@@ -184,7 +213,7 @@ export default {
 			// icon: 'chat',
 			// text: '客服'
 			// }
-	],
+		],
 	    buttonGroup: [{
 	      text: '买入',
 	      backgroundColor: '#ff0000',

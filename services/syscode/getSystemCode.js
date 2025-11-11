@@ -13,7 +13,7 @@ export const getSystemCode = async (codeType) => {
     if (ENV.MOCK.DELAY > 0) await new Promise(r => setTimeout(r, ENV.MOCK.DELAY))
     // 动态加载 mock 数据
     try {
-      const response = await fetch(`../mock/syscode/${codeType}.json`);
+      const response = await fetch(`../../mock/syscode/${codeType}.json`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
