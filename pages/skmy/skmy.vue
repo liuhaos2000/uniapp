@@ -11,7 +11,7 @@
 				<uni-col :span="16" class="user-info">
 					<view class="">{{ userInfo.userName }}</view>
 					<view class="">等級：VIP⚜️</view>
-					<view class="">期限{{ userInfo.userLevelTimeLimit }}</view>
+					<view class="">期限：{{ userInfo.userLevelTimeLimit }}</view>
 				</uni-col>
 			</uni-row>
 		</view>
