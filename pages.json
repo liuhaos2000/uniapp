@@ -15,7 +15,11 @@
 		{
 			"path": "pages/sk/sk",
 			"style": {
-				"navigationBarTitleText": "詳細"
+				"navigationBarTitleText": "詳細",
+				"app-plus": {
+					"animationType": "slide-out-right",
+					"animationDuration": 300
+				}
 			}
 		},
 		{
@@ -27,7 +31,7 @@
 		{
 			"path": "pages/skmy/skmy",
 			"style": {
-				"navigationBarTitleText": "我的"
+				"navigationBarTitleText": ""
 			}
 		}
 	],
@@ -47,7 +51,7 @@
 			"selectedIconPath": "static/image/icon_API_HL.png",
 			"text": "查找"
 		},{
-			"pagePath": "pages/main/main01/main01",
+			"pagePath": "pages/skmy/skmy",
 			"iconPath": "static/image/icon_API.png",
 			"selectedIconPath": "static/image/icon_API_HL.png",
 			"text": "我的"
@@ -56,7 +60,7 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarBackgroundColor": "#94bcff",
 		"backgroundColor": "#F8F8F8"
 	},
 	"uniIdRouter": {}

@@ -113,7 +113,9 @@
 	const handleRowClick = (item) => {
 		// 使用 uni.navigateTo 进行页面跳转
 		uni.navigateTo({
-			url: `/pages/sk/sk?skId=${item.skId}`
+			url: `/pages/sk/sk?skId=${item.skId}`,
+			animationType: 'slide-in-right',
+			animationDuration: 200
 		})
 	}
 
