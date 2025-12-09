@@ -3,12 +3,12 @@
  */
 export default {
   // 全局mock开关
-  USE_MOCK: true,
+  USE_MOCK: false,
   
   // API配置
   API: {
     // API基础URL
-    BASE_URL: 'http://your-api-base-url',
+    BASE_URL: 'http://127.0.0.1:8000/api',
     
     // 超时时间（毫秒）
     TIMEOUT: 10000,

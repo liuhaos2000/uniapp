@@ -2,7 +2,7 @@
 import ENV from '@/config/env.js'
 import mockData from '@/mock/sk/getMy/data.json'
 
-const API_URL = `${ENV.API.BASE_URL}/${ENV.API.VERSION}/sk/getMy`
+const API_URL = `${ENV.API.BASE_URL}/my/firststock`
 
 export const getMy = async () => {
 

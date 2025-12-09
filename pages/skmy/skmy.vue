@@ -4,9 +4,8 @@
 		<view style="padding: 10px; background-color: #94bcff;">
 			<uni-row class="user-row">
 				<uni-col :span="8" class="user-col">
-					<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/094a9dc0-50c0-11eb-b680-7980c8a877b8.jpg" 
+					<img :src="userInfo.userImage" 
 							class="user-image"></img>
-
 				</uni-col>
 				<uni-col :span="16" class="user-info">
 					<view class="">{{ userInfo.userName }}</view>
@@ -66,10 +65,10 @@
 	const loadTableData = async () => {
 		try {
 			loading.value = true
-			const data = await getMy()
-			console.log('findsk:', data); // 调试输出
-			tableData.value = data.userSkList
-			userInfo.value= {...data};
+			const result = await getMy()
+			console.log('findsk:', result.data); // 调试输出
+			tableData.value = result.data.userSkList
+			userInfo.value= {...result.data};
 
 		} catch (e) {
 			console.error('表格数据加载失败', e)
@@ -98,7 +97,7 @@
 <style>
 	/* 涨幅大于0的行 */
 	.positive-movement {
-		color: #ee6666; /* 浅红色背景 */
+		color: #D90214; /* 浅红色背景 */
 	}
 
 	/* 涨幅小于0的行 */
