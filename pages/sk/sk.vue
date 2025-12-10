@@ -86,7 +86,7 @@ export default {
 		// inputParms  
 		const route = useRoute();
 
-		const { initAndRender, resize } = useSkLogic()
+		const { resize } = useSkLogic()
 		// 下拉框
 		const dataList = ref([])
 		const selected = ref(0)
@@ -99,9 +99,15 @@ export default {
 		const loadTableData = async () => {
 			try {
 				loading.value = true
-				const data = await getHuiceData(route.query.skId, selected.value)
-				console.log('getHuiceData:', data); // 调试输出
-				tableData.value = data.historyList
+				const r = await getHuiceData(route.query.skId, selected.value)
+				console.log('getHuiceData:', r); // 调试输出
+				tableData.value = r.data.historyList
+
+				// mack数据更新
+				const { updateEcharts } = useSkLogic()
+				await updateEcharts(r)
+				console.log('sk chart update')
+
 			} catch (e) {
 				console.error('表格数据加载失败', e)
 			} finally {

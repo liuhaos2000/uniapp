@@ -3,7 +3,7 @@
  */
 export default {
   // 全局mock开关
-  USE_MOCK: false,
+  USE_MOCK: true,
   
   // API配置
   API: {

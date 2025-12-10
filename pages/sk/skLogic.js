@@ -65,16 +65,16 @@ export function useSkLogic() {
       const initData = await getSkInitData()
 
       // initData should include a `raw` array like in the original example
-      const raw = initData.raw || []
+      const raw = initData.data.raw || []
       const data0 = splitData(raw)
 
-      const upColor = initData.upColor || '#ec0000'
-      const upBorderColor = initData.upBorderColor || '#8A0000'
-      const downColor = initData.downColor || '#00da3c'
-      const downBorderColor = initData.downBorderColor || '#008F28'
+      const upColor = '#ec0000'
+      const upBorderColor = '#8A0000'
+      const downColor = '#00da3c'
+      const downBorderColor = '#008F28'
 
       const option = {
-        title: { text: initData.title || '上证指数', left: 0 },
+        title: { text: initData.data.title || '上证指数', left: 0 },
         tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
         legend: { data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'], top: 50 },
         grid: { left: '10%', right: '10%', bottom: '15%' ,top:90},
@@ -88,7 +88,7 @@ export function useSkLogic() {
           max: 'dataMax'
         },
         yAxis: { scale: true, splitArea: { show: true } },
-        dataZoom: initData.dataZoom || [ { type: 'inside', start: 50, end: 100 }, { show: true, type: 'slider', top: '90%', start: 50, end: 100 } ],
+        dataZoom: initData.data.dataZoom || [ { type: 'inside', start: 50, end: 100 }, { show: true, type: 'slider', top: '90%', start: 50, end: 100 } ],
         series: [
           {
             name: '日K',
@@ -99,9 +99,7 @@ export function useSkLogic() {
               color0: downColor,
               borderColor: upBorderColor,
               borderColor0: downBorderColor
-            },
-            markPoint: initData.markPoint || {},
-            markLine: initData.markLine || {}
+            }
           },
           { name:  'MA5', type: 'line', data: calculateMA(data0.values,  5), smooth: true, lineStyle: { opacity: 0.5 } },
           { name: 'MA10', type: 'line', data: calculateMA(data0.values, 10), smooth: true, lineStyle: { opacity: 0.5 } },
@@ -116,6 +114,23 @@ export function useSkLogic() {
       throw e
     } finally {
       loading.value = false
+    }
+  }
+
+  function updateEcharts(initData) {
+
+      const newOptions = {
+        series: [
+          {
+            name: '日K',
+            markPoint: initData.data.markPoint || {},
+            markLine: initData.data.markLine || {}
+          }
+        ]
+      }
+
+    if (chart) {
+      chart.setOption(newOptions, false)  // 第二个参数为 true 表示不合并配置，直接替换
     }
   }
 
@@ -139,6 +154,7 @@ export function useSkLogic() {
     loading,
     initAndRender,
     resize,
-    dispose
+    dispose,
+    updateEcharts
   }
 }
