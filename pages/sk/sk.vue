@@ -30,14 +30,18 @@
 				<uni-table ref="table" :loading="loading" border stripe emptyText="暂无更多数据"
 					@selection-change="selectionChange">
 					<uni-tr>
-						<uni-th width="80" align="center">買入日</uni-th>
-						<uni-th width="80" align="center">賣出日</uni-th>
+						<uni-th width="40" align="center">買入日</uni-th>
+						<uni-th width="40" align="center">価</uni-th>
+						<uni-th width="40" align="center">賣出日</uni-th>
+						<uni-th width="40" align="center">価</uni-th>
 						<uni-th width="20" align="center">倉位</uni-th>
 						<uni-th width="20" align="center">盈利</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item, index) in tableData" :key="index">
 						<uni-td>{{ item.buyDate }}</uni-td>
+						<uni-td>{{ item.buyPrice }}</uni-td>
 						<uni-td>{{ item.sellDate }}</uni-td>
+						<uni-td>{{ item.sellPrice }}</uni-td>
 						<uni-td align="right">{{ item.warehousePosition }}</uni-td>
 						<uni-td align="right">{{ item.profitMargin }}</uni-td>
 					</uni-tr>
