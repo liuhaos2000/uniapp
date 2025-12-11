@@ -51,7 +51,7 @@
 	import uniTr from '@dcloudio/uni-ui/lib/uni-tr/uni-tr.vue'
 	import uniTh from '@dcloudio/uni-ui/lib/uni-th/uni-th.vue'
 	import uniTd from '@dcloudio/uni-ui/lib/uni-td/uni-td.vue'
-	import getSystemCode from '@/services/syscode/getSystemCode.js'
+	import getStrategy2 from '@/services/sk/getStrategy2.js'
 	import uniDataSelect from '@dcloudio/uni-ui/lib/uni-data-select/uni-data-select.vue'
 
 
@@ -77,28 +77,20 @@
 	}
 
 	onMounted(async () => {
-
-
-
-		// 1 使用 getSystemCode 加载下拉框数据
+		// 1 使用 getStrategy2 加载下拉框数据
 		try {
-			const syscodeData = await getSystemCode('findcelue')
-			console.log('syscodeData findcelue:', syscodeData);
-			if (syscodeData && Array.isArray(syscodeData)) {
-				dataList.value = syscodeData
-				selected.value = dataList.value.length > 0 ? dataList.value[0] : null
-			} else if (syscodeData && Array.isArray(syscodeData.selectOptions)) {
-				dataList.value = syscodeData.selectOptions
-				selected.value = dataList.value.length > 0 ? 1 : 0
-			}
+			const strategy2 = await getStrategy2()
+			console.log('strategy:', strategy2.data);
+			if (strategy2.data && Array.isArray(strategy2.data)) {
+				dataList.value = strategy2.data
+				selected.value = dataList.value.length > 0 ? dataList.value[0].value : null
+			} 
 		} catch (e) {
 			console.error('下拉框数据加载失败', e)
 		}
 
 		// 2 加载表格数据
 		await loadTableData()
-
-		
 	})
 
 	function onDataSelectChange(val) {

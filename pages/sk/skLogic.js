@@ -53,6 +53,9 @@ export function useSkLogic() {
   const loading = ref(false)
 
   async function initAndRender(containerId, optionParams = {}) {
+
+
+
     loading.value = true
     try {
       const echarts = await loadEcharts()
@@ -62,7 +65,7 @@ export function useSkLogic() {
       chart = echarts.init(dom, null, SK_CONSTANTS.CHART_DEFAULTS)
 
       // fetch init data from service
-      const initData = await getSkInitData()
+      const initData = await getSkInitData(optionParams.skId)
 
       // initData should include a `raw` array like in the original example
       const raw = initData.data.raw || []

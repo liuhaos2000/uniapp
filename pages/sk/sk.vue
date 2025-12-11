@@ -62,7 +62,7 @@ import uniTh from '@dcloudio/uni-ui/lib/uni-th/uni-th.vue'
 import uniTd from '@dcloudio/uni-ui/lib/uni-td/uni-td.vue'
 import uniPagination from '@dcloudio/uni-ui/lib/uni-pagination/uni-pagination.vue'
 import uniDataSelect from '@dcloudio/uni-ui/lib/uni-data-select/uni-data-select.vue'
-import getSystemCode from '@/services/syscode/getSystemCode.js'
+import getStrategy from '@/services/sk/getStrategy.js'
 import getHuiceData from '@/services/sk/getHuice.js'
 import { useRoute } from 'vue-router';
 import uniIcons from '@dcloudio/uni-ui/lib/uni-icons/uni-icons.vue';
@@ -80,7 +80,6 @@ export default {
 		uniDataSelect,
 		uniIcons,
 		uniGoodsNav
-	
 	},
 	setup() {
 		// inputParms  
@@ -142,17 +141,14 @@ export default {
 			// add resize listener for responsiveness
 			window.addEventListener('resize', resizeHandler)
 
-			// 1 使用 getSystemCode 加载下拉框数据
+			// 1 使用 getStrategy 加载下拉框数据
 			try {
-				const syscodeData = await getSystemCode('celue')
-				console.log('syscodeData:', syscodeData);
-				if (syscodeData && Array.isArray(syscodeData)) {
-					dataList.value = syscodeData
-					selected.value = dataList.value.length > 0 ? dataList.value[0] : null
-				} else if (syscodeData && Array.isArray(syscodeData.selectOptions)) {
-					dataList.value = syscodeData.selectOptions
-					selected.value = dataList.value.length > 0 ? 1 : 0
-				}
+				const strategy = await getStrategy()
+				console.log('strategy:', strategy.data);
+				if (strategy.data && Array.isArray(strategy.data)) {
+					dataList.value = strategy.data
+					selected.value = dataList.value.length > 0 ? dataList.value[0].value : null
+				} 
 			} catch (e) {
 				console.error('下拉框数据加载失败', e)
 			}
@@ -161,22 +157,22 @@ export default {
 			const { initAndRender } = useSkLogic()
 			
 			try {
-				await initAndRender(SK_CONSTANTS.CHART_CONTAINER_ID)
+				await initAndRender(SK_CONSTANTS.CHART_CONTAINER_ID,{skId: route.query.skId})
 				console.log('sk chart initialized')
 			} catch (e) {
 				console.error('Failed to initialize sk chart:', e)
 			}
 			// 3 加载表格数据
-			await loadTableData()
+			//await loadTableData()
 
 			// 4 建立 WebSocket 连接
-			const socket = new WebSocket('ws://localhost:8080'); // 使用 mock 服务器地址
+			// const socket = new WebSocket('ws://localhost:8080'); // 使用 mock 服务器地址
 
-			socket.onopen = () => {
-				console.log('WebSocket connection established')
-				// 发送初始化请求
-				socket.send(JSON.stringify({ action: 'subscribe', skId: route.query.skId }))
-			}
+			// socket.onopen = () => {
+			// 	console.log('WebSocket connection established')
+			// 	// 发送初始化请求
+			// 	socket.send(JSON.stringify({ action: 'subscribe', skId: route.query.skId }))
+			// }
 
 			socket.onmessage = (event) => {
 				const data = JSON.parse(event.data)
