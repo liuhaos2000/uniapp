@@ -2,7 +2,7 @@
 import ENV from '@/config/env.js'
 import mockData from '@/mock/sk/getHuice/data.json'
 
-const API_URL = `${ENV.API.BASE_URL}/${ENV.API.VERSION}/sk/getHuice`
+const API_URL = `${ENV.API.BASE_URL}/sk/gethuice`
 
 export const getHuiceData = async (skId,celueId) => {
 
