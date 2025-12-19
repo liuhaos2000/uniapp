@@ -51,7 +51,7 @@
 		</view>
 
 		<vive class="goods-carts goods-carts2">
-			<uni-goods-nav :options="options" :buttonGroup="buttonGroup" @click="onClick" />
+			<uni-goods-nav :options="options" :buttonGroup="buttonGroup" @click="onClick" @buttonClick="buttonClick" />
 		</vive>
 	</view>
 </template>
@@ -68,6 +68,7 @@ import uniPagination from '@dcloudio/uni-ui/lib/uni-pagination/uni-pagination.vu
 import uniDataSelect from '@dcloudio/uni-ui/lib/uni-data-select/uni-data-select.vue'
 import getStrategy from '@/services/sk/getStrategy.js'
 import getHuiceData from '@/services/sk/getHuice.js'
+import { addToWatchlist, removeFromWatchlist } from '@/services/sk/watchlist.js'
 import { useRoute } from 'vue-router';
 import uniIcons from '@dcloudio/uni-ui/lib/uni-icons/uni-icons.vue';
 import uniGoodsNav from '@dcloudio/uni-ui/lib/uni-goods-nav/uni-goods-nav.vue';
@@ -97,6 +98,23 @@ export default {
 		// 表格相关的响应式数据
 		const loading = ref(false)
 		const tableData = ref([])
+
+		// 关注list
+		const guanzhuList = ref([])
+
+		// 按钮组（将按钮状态放到 setup 中以便动态更新）
+		const buttonGroup = ref([
+			{
+				text: '測試',
+				backgroundColor: '#ff0000',
+				color: '#fff'
+			},
+			{
+				text: '加入自選',
+				backgroundColor: '#ffa200',
+				color: '#fff'
+			}
+		])
 
 		// 加载表格数据的方法
 		const loadTableData = async () => {
@@ -149,10 +167,32 @@ export default {
 			try {
 				const strategy = await getStrategy()
 				console.log('strategy:', strategy.data);
+				guanzhuList.value = strategy.guanzhuList
 				if (strategy.data && Array.isArray(strategy.data)) {
 					dataList.value = strategy.data
 					selected.value = dataList.value.length > 0 ? dataList.value[0].value : null
 				} 
+				
+				// 根据 route.query.skId 判断当前是否已在关注列表中，更新按钮文字
+				const curId = route.query.skId
+				// 打印调试信息，便于后端返回的 guanzhuList 与前端路由参数核对
+				console.log('route.query.skId:', curId)
+				console.log('guanzhuList from strategy:', guanzhuList.value)
+
+				// 归一化比较：去掉非字母数字字符并转大写，便于匹配类似 "000811.SZ" 与 "000811sz"
+				const strip = (s) => (s || '').toString().toUpperCase().replace(/[^A-Z0-9]/g, '')
+				const cur6 = strip(curId).slice(0, 6)
+				// 构建归一化后的关注列表（前6位）
+				const normalizedGuanzhu = (guanzhuList.value || []).map(item => strip(item).slice(0, 6))
+				console.log('normalized cur6:', cur6)
+				console.log('normalized guanzhu list (first6):', normalizedGuanzhu)
+				const found = normalizedGuanzhu.includes(cur6)
+				console.log('matched in guanzhuList:', found)
+				if (found) {
+					buttonGroup.value[1].text = '取消自選'
+				} else {
+					buttonGroup.value[1].text = '加入自選'
+				}
 			} catch (e) {
 				console.error('下拉框数据加载失败', e)
 			}
@@ -178,20 +218,20 @@ export default {
 			// 	socket.send(JSON.stringify({ action: 'subscribe', skId: route.query.skId }))
 			// }
 
-			socket.onmessage = (event) => {
-				const data = JSON.parse(event.data)
-				console.log('WebSocket received data:', data)
-				// 更新表格数据
-				tableData.value = data.historyList
-			}
+			// socket.onmessage = (event) => {
+			// 	const data = JSON.parse(event.data)
+			// 	console.log('WebSocket received data:', data)
+			// 	// 更新表格数据
+			// 	tableData.value = data.historyList
+			// }
 
-			socket.onerror = (error) => {
-				console.error('WebSocket error:', error)
-			}
+			// socket.onerror = (error) => {
+			// 	console.error('WebSocket error:', error)
+			// }
 
-			socket.onclose = () => {
-				console.log('WebSocket connection closed')
-			}
+			// socket.onclose = () => {
+			// 	console.log('WebSocket connection closed')
+			// }
 
 			// 保存 WebSocket 对象以便在卸载组件时关闭连接
 			return () => {
@@ -213,7 +253,9 @@ export default {
 			loading,
 			tableData,
 			selectionChange,
-			formSubmit
+			formSubmit,
+			buttonGroup,
+			guanzhuList
 		}
 	},
 
@@ -228,30 +270,67 @@ export default {
 			// icon: 'contact',
 			// text: '客服'
 			// }
-		],
-	    buttonGroup: [{
-	      text: '測試',
-	      backgroundColor: '#ff0000',
-	      color: '#fff'
-	    },
-	    {
-	      text: '加入自選',
-	      backgroundColor: '#ffa200',
-	      color: '#fff'
-	    }
-	    ]
+		]
 	  }
 	},
 	methods: {
-	  onClick (e) {
-	    uni.showToast({
-	      title: `点击${e.content.text}`,
-	      icon: 'none'
-	    })
+	  async onClick (e) {
+			try {
+				console.log('onClick event:', e)
+				uni.showToast({ title: `点击${e && e.content ? e.content.text : ''}`, icon: 'none' })
+				// 如果点击的是第二个按钮（加入/取消自選），根据当前文字决定调用添加或删除接口
+				const secondText = this.buttonGroup && this.buttonGroup[1] && this.buttonGroup[1].text
+				console.log('secondText:', secondText)
+				if (e && e.content && e.content.text && e.content.text === secondText) {
+					const rawId = (this.$route && this.$route.query && this.$route.query.skId) || ''
+					const stock_code = (rawId || '').toString().replace(/[^0-9]/g, '').slice(0,6)
+					console.log('rawId, stock_code:', rawId, stock_code)
+					if (!stock_code) return
+					if (secondText === '加入自選') {
+						const resp = await addToWatchlist(stock_code)
+						console.log('addToWatchlist resp:', resp)
+						if (resp && (resp.code === 0 || resp.success === true || resp.status === 'ok')) {
+							if (Array.isArray(this.guanzhuList)) this.guanzhuList.push(stock_code)
+							if (this.buttonGroup && this.buttonGroup[1]) this.buttonGroup[1].text = '取消自選'
+							uni.showToast({ title: '已加入自選', icon: 'success' })
+						} else {
+							uni.showToast({ title: (resp && resp.message) || '加入失败', icon: 'none' })
+						}
+					} else if (secondText === '取消自選') {
+						const resp = await removeFromWatchlist(stock_code)
+						console.log('removeFromWatchlist resp:', resp)
+						if (resp && (resp.code === 0 || resp.success === true)) {
+							if (Array.isArray(this.guanzhuList)) {
+								const idx = this.guanzhuList.findIndex(x => (x || '').toString().slice(0,6) === stock_code)
+								if (idx >= 0) this.guanzhuList.splice(idx, 1)
+							}
+							if (this.buttonGroup && this.buttonGroup[1]) this.buttonGroup[1].text = '加入自選'
+							uni.showToast({ title: '已取消自選', icon: 'success' })
+						} else {
+							uni.showToast({ title: (resp && resp.message) || '取消失败', icon: 'none' })
+						}
+					}
+				}
+			} catch (err) {
+				console.error('watchlist action failed', err)
+				uni.showToast({ title: '操作失败', icon: 'none' })
+			}
 	  },
 	  buttonClick (e) {
-	    console.log(e)
-	    this.options[2].info++
+	    console.log('buttonClick event:', e)
+	    // 只有当点击的按钮文本等于第二个按钮（加入/取消自選）时，才触发 onClick 处理逻辑
+	    try {
+	      const clickedText = e && e.content && e.content.text
+	      const secondText = this.buttonGroup && this.buttonGroup[1] && this.buttonGroup[1].text
+	      if (clickedText && secondText && clickedText === secondText) {
+	        // 转发到 onClick，保持原有行为（包含后端调用及 UI 更新）
+	        this.onClick(e)
+	      } else {
+	        console.log('buttonClick ignored, clickedText:', clickedText)
+	      }
+	    } catch (err) {
+	      console.error('buttonClick handler error', err)
+	    }
 	  }
 	}
 

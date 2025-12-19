@@ -1,6 +1,11 @@
 <template>
 	<view class="uni-container">
 		<view>
+			<uniSearchBar @confirm="search" :focus="true" v-model="searchValue" @blur="blur" @focus="focus" @input="input"
+				@cancel="cancel" @clear="clear">
+			</uniSearchBar>
+		</view>
+		<view>
 			<uni-forms ref="form"  :modelValue="formData">
 				<view class="uni-list sk-div">
 					<view class="uni-list-cell">
@@ -53,7 +58,11 @@
 	import uniTd from '@dcloudio/uni-ui/lib/uni-td/uni-td.vue'
 	import getStrategy2 from '@/services/sk/getStrategy2.js'
 	import uniDataSelect from '@dcloudio/uni-ui/lib/uni-data-select/uni-data-select.vue'
+	import uniSearchBar from '@dcloudio/uni-ui/lib/uni-search-bar/uni-search-bar.vue'
 
+	// 查询
+	const searchValue = ref("")
+	const allnames = ref([])
 
 	// 下拉框
 	const dataList = ref([])
@@ -81,6 +90,7 @@
 		try {
 			const strategy2 = await getStrategy2()
 			console.log('strategy:', strategy2.data);
+			allnames.value = strategy2.allnames
 			if (strategy2.data && Array.isArray(strategy2.data)) {
 				dataList.value = strategy2.data
 				selected.value = dataList.value.length > 0 ? dataList.value[0].value : null
@@ -90,11 +100,60 @@
 		}
 
 		// 2 加载表格数据
-		await loadTableData()
+		//await loadTableData()
 	})
 
 	function onDataSelectChange(val) {
 
+	}
+
+	// 补充缺失的表单数据，避免模板引用错误（不改变按钮 formSubmit 行为）
+	const formData = ref({})
+
+	// 表格选择变化占位，防止模板报错
+	const selectionChange = (val) => {
+		// 占位，按需实现
+	}
+
+	// 实时输入处理：基于 allnames 的 dm 或 mc 做模糊匹配，并把结果显示到表格中
+	const input = (val) => {
+		const q = typeof val === 'string' ? val : searchValue.value
+		if (!q || q.trim() === '') {
+			tableData.value = []
+			return
+		}
+
+		const lower = q.toLowerCase()
+		const matches = (allnames.value || []).filter(item => {
+			const dmMatch = item.dm && item.dm.indexOf(q) !== -1
+			const mcMatch = item.mc && item.mc.toLowerCase().indexOf(lower) !== -1
+			return dmMatch || mcMatch
+		})
+
+		tableData.value = matches.map(it => ({
+			skId: it.dm,
+			skName: it.mc,
+			price: '',
+			movement: ''
+		}))
+	}
+
+	const clear = () => {
+		searchValue.value = ''
+		tableData.value = []
+	}
+
+	const cancel = () => {
+		clear()
+	}
+
+	const blur = () => {}
+
+	const focus = () => {}
+
+	// 确认搜索（回车）事件，调用同样的本地搜索逻辑
+	const search = () => {
+		input(searchValue.value)
 	}
 
 	const formSubmit = async (praams) => {
@@ -105,7 +164,7 @@
 	const handleRowClick = (item) => {
 		// 使用 uni.navigateTo 进行页面跳转
 		uni.navigateTo({
-			url: `/pages/sk/sk?skId=${item.skId}`,
+			url: `/pages/sk/sk?skId=${item.skId}&skName=${item.skName}`,
 			animationType: 'slide-in-right',
 			animationDuration: 200
 		})
